@@ -36,8 +36,10 @@ public class BeerVerificationListenerTest {
     @Test
     public void should_call_beer_verification_service_when_verification_was_accepted() {
 
+        // act
         this.stubTrigger.trigger("accepted_verification");
 
+        // assert
         BeerVerification verification = beerVerificationServiceMock.getVerificationInRequest();
 
         assertThat(verification, is(notNullValue()));
@@ -46,6 +48,6 @@ public class BeerVerificationListenerTest {
         assertThat(verification.getIsApproved(), is(equalTo(true)));
         assertThat(verification.getBeersCount(), is(equalTo(7)));
         assertThat(verification.getCity(), is(equalTo( "medellin")));
-        assertThat(verification.getDateOfBirth(), is(equalTo(Instant.parse("1975-04-01 08:00:00 AM"))));
+        assertThat(verification.getDateOfBirth(), is(equalTo(Instant.parse("1975-04-01T12:00:00Z"))));
     }
 }

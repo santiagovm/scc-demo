@@ -18,9 +18,18 @@ repositories {
 	mavenCentral()
 }
 
+sourceSets {
+	main {
+		java {
+			srcDirs 'temp/generated-sources/java/'
+		}
+	}
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
-	implementation("org.springframework.cloud:spring-cloud-starter-stream-rabbit")
+	implementation 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
+	implementation 'com.google.protobuf:protobuf-java:3.9.1'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -45,3 +54,9 @@ test {
 		exceptionFormat = 'full'
 	}
 }
+
+task generateProto(type:Exec) {
+	commandLine './scripts/generate-proto.sh'
+}
+
+compileJava.dependsOn generateProto
