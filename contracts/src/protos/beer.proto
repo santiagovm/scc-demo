@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package com.vasquez.beer;
+option java_package = "com.vasquez";
+option java_outer_classname = "Beer";
+
+message Response {
+    enum BeerCheckStatus {
+        NOT_OK = 0;
+        OK = 1;
+    }
+
+    string name = 1;
+    BeerCheckStatus status = 2;
+    int32 beersCount = 3;
+
+    string city = 16;
+    int64 dob =17;
+}

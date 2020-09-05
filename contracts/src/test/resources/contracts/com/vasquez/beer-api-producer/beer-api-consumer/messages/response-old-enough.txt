@@ -1,0 +1,5 @@
+name : "santiago vasquez"
+status : OK
+beersCount : 7
+city : "medellin"
+dob : 165585600
