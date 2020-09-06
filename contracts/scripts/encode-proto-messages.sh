@@ -13,12 +13,12 @@ function download_protoc() {
   export PROTOC_VERSION="3.9.1"
   export PROTOC_TAG="v${PROTOC_VERSION}"
 
-  if [ ! -f temp/protoc/bin/protoc ]; then
-    rm -rf temp/protoc
-    mkdir -p temp/protoc
+  if [ ! -f target/protoc/bin/protoc ]; then
+    rm -rf target/protoc
+    mkdir -p target/protoc
     echo "fetching protoc..."
-    wget https://github.com/protocolbuffers/protobuf/releases/download/"${PROTOC_TAG}"/protoc-"${PROTOC_VERSION}"-osx-x86_64.zip -O temp/protoc.zip
-    unzip temp/protoc.zip -d temp/protoc
+    wget https://github.com/protocolbuffers/protobuf/releases/download/"${PROTOC_TAG}"/protoc-"${PROTOC_VERSION}"-osx-x86_64.zip -O target/protoc.zip
+    unzip target/protoc.zip -d target/protoc
     echo "protoc fetched!"
   else
     echo "protoc already downloaded"
@@ -26,7 +26,7 @@ function download_protoc() {
 }
 
 function encode_messages() {
-  local contractsFolder="src/test/resources/contracts/com/vasquez/beer-api-producer/beer-api-consumer"
+  local contractsFolder="src/main/resources/contracts/com/vasquez/beer-api-producer-external/beer-api-consumer"
   local tempFolder="$contractsFolder/temp/encoded-messages"
 
   rm -rf $tempFolder
@@ -36,7 +36,7 @@ function encode_messages() {
     encodedFilename="$tempFolder/$(basename "$filename" .txt).bin.base64"
 
     cat $filename | \
-      temp/protoc/bin/protoc --encode=com.vasquez.beer.Response src/protos/beer.proto | \
+      target/protoc/bin/protoc --encode=com.vasquez.beer.Response src/protos/beer.proto | \
       base64 > "$encodedFilename"
   done
 

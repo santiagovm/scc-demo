@@ -4,12 +4,14 @@ set -o errexit
 set -o errtrace
 set -o pipefail
 
-contracts_path=src/test/resources/contracts/com/vasquez/beer-api-producer/beer-api-consumer
-maven_repo_path=~/.m2/repository/com/vasquez/beer-api-producer-external
+contracts_path=src/main/resources/contracts/com/vasquez/beer-api-producer-external/beer-api-consumer
+maven_repo_path_for_consumer=~/.m2/repository/com/vasquez/beer-api-producer-external
+maven_repo_path_for_producer=~/.m2/repository/com/vasquez/beer-contracts
 
-function delete_old_jar_in_local_maven_repository() {
-  rm -rf $maven_repo_path
-  echo "deleted contracts jar in local maven repo"
+function delete_old_jars_in_local_maven_repository() {
+  rm -rf $maven_repo_path_for_consumer
+  rm -rf $maven_repo_path_for_producer
+  echo "deleted contracts jars in local maven repo"
 }
 
 function delete_contracts_temp() {
@@ -17,9 +19,9 @@ function delete_contracts_temp() {
   echo "deleted contracts temp folder"
 }
 
-function delete_root_temp() {
-  rm -rf temp
-  echo "deleted root temp folder"
+function delete_root_target() {
+  rm -rf target
+  echo "deleted root target folder"
 }
 
 function maven_clean() {
@@ -29,17 +31,11 @@ function maven_clean() {
   echo "ran maven clean within resources/contracts "
 }
 
-function gradle_clean() {
-  ./gradlew clean
-  echo "ran gradle clean in contracts project root"
-}
-
 function main() {
   maven_clean
-  gradle_clean
-  delete_old_jar_in_local_maven_repository
+  delete_old_jars_in_local_maven_repository
   delete_contracts_temp
-  delete_root_temp
+  delete_root_target
 }
 
 main
