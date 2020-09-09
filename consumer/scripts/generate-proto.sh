@@ -8,12 +8,12 @@ function download_protoc() {
   export PROTOC_VERSION="3.9.1"
   export PROTOC_TAG="v${PROTOC_VERSION}"
 
-  if [ ! -f temp/protoc/bin/protoc ]; then
-    rm -rf temp/protoc
-    mkdir -p temp/protoc
+  if [ ! -f target/protoc/bin/protoc ]; then
+    rm -rf target/protoc
+    mkdir -p target/protoc
     echo "fetching protoc..."
-    wget https://github.com/protocolbuffers/protobuf/releases/download/"${PROTOC_TAG}"/protoc-"${PROTOC_VERSION}"-osx-x86_64.zip -O temp/protoc.zip
-    unzip temp/protoc.zip -d temp/protoc
+    wget https://github.com/protocolbuffers/protobuf/releases/download/"${PROTOC_TAG}"/protoc-"${PROTOC_VERSION}"-osx-x86_64.zip -O target/protoc.zip
+    unzip target/protoc.zip -d target/protoc
     echo "protoc fetched!"
   else
     echo "protoc already downloaded"
@@ -21,9 +21,9 @@ function download_protoc() {
 }
 
 function generate_proto() {
-  rm -rf temp/generated-sources/java
-  mkdir -p temp/generated-sources/java
-  temp/protoc/bin/protoc --java_out=temp/generated-sources/java src/main/resources/proto/beer.proto
+  rm -rf target/generated-sources/java
+  mkdir -p target/generated-sources/java
+  target/protoc/bin/protoc --java_out=target/generated-sources/java src/main/resources/proto/beer.proto
   echo "proto files generated"
 }
 
