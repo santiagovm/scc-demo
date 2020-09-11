@@ -1,5 +1,6 @@
 package com.vasquez;
 
+import com.google.protobuf.ByteString;
 import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
@@ -19,16 +20,29 @@ public class AgeCheckingPersonCheckingService implements PersonCheckingService {
     @Override
     public void shouldGetBeer(int age) {
 
-        Beer.Response beerResponse = Beer.Response.newBuilder()
-                .setName("foo-name")
-                .setStatus(Beer.Response.BeerCheckStatus.OK)
-                .setBeersCount(99)
-                .setCity("foo-city")
-                .setDob(Instant.parse("2020-09-06T15:15:15Z").getEpochSecond())
+        Response beerResponse = Response.newBuilder()
+                .setName("santiago vasquez")
+                .setStatus(Response.BeerCheckStatus.OK)
+                .setBeersCount(7)
+                .setCity("medellin")
+                .setDob(Instant.parse("1975-04-01T12:00:00Z").getEpochSecond())
                 .build();
 
         byte[] beerResponseByteArray = beerResponse.toByteArray();
-        Message<byte[]> message = MessageBuilder.withPayload(beerResponseByteArray).build();
+
+        EventToPublish eventToPublish = EventToPublish.builder()
+                .type("foo-event-type")
+                .body(beerResponseByteArray)
+                .build();
+
+        SomeCustomEnvelope messageEnvelope = SomeCustomEnvelope.newBuilder()
+                .setMessageType("foo-message-type")
+                .setEventData(ByteString.copyFrom(eventToPublish.getBody()))
+                .build();
+
+        Message<byte[]> message = MessageBuilder.withPayload(messageEnvelope.toByteArray())
+                .setHeader("contentType", "application/some-custom-mime-type")
+                .build();
 
         this.source.output().send(message);
     }

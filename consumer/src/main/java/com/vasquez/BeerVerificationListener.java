@@ -19,19 +19,19 @@ public class BeerVerificationListener {
 
     @StreamListener(Sink.INPUT)
     public void listen(byte[] rawMessage) {
-        Beer.Response responseProto = parseProtoBytes(rawMessage);
+        Response responseProto = parseProtoBytes(rawMessage);
         BeerVerification verification = new BeerVerification(responseProto);
         beerVerificationService.process(verification);
     }
 
     @SneakyThrows
-    private Beer.Response parseProtoBytes(byte[] rawMessage) {
+    private Response parseProtoBytes(byte[] rawMessage) {
 
         byte[] noQuotes = removeQuotes(rawMessage);
         byte[] noNewLine = removeNewLine(noQuotes);
         byte[] decodedBytes = Base64.getDecoder().decode(noNewLine);
 
-        return Beer.Response.parseFrom(decodedBytes);
+        return Response.parseFrom(decodedBytes);
     }
 
     private byte[] removeNewLine(byte[] bytes) {

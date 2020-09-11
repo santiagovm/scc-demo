@@ -25,6 +25,6 @@ then:
         sentTo 'verifications'
 
         // the body of the output message
-        body(file("temp/encoded-messages/response-old-enough.bin.base64"))
+        body(fileAsBytes("temp/encoded-messages/response-old-enough.bin"))
     }
 }

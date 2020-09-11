@@ -1,5 +1,5 @@
-name : "sebastian vasquez"
-status : NOT_OK
-beersCount : 0
-city : "new york"
-dob : 1297800000
+name: "sebastian vasquez"
+status: NOT_OK
+beersCount: 0
+city: "new york"
+dob: 1297800000

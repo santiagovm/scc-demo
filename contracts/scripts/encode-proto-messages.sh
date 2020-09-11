@@ -33,14 +33,63 @@ function encode_messages() {
   mkdir -p $tempFolder
 
   for filename in $(ls $contractsFolder/messages/*.txt); do
-    encodedFilename="$tempFolder/$(basename "$filename" .txt).bin.base64"
 
-    cat $filename | \
-      target/protoc/bin/protoc --encode=com.vasquez.beer.Response src/protos/beer.proto | \
-      base64 > "$encodedFilename"
+    response_proto=$(cat $filename | target/protoc/bin/protoc --encode=com.vasquez.beer.Response src/protos/beer.proto)
+    # show_bytes_as_octal "$response_proto"
+
+    response_proto_octal=$(convert_octal_bytes_to_escaped_string_sequence "$response_proto")
+    # printf "response_proto_octal = [%s]\n" "$response_proto_octal"
+
+    message_envelope_plain_text="message_type: \"foo-message-type\"
+event_data: \"$response_proto_octal\""
+
+    # echo "message_envelope_plain_text"
+    # echo "$message_envelope_plain_text"
+
+    message_envelope_proto=$(printf "%s" "$message_envelope_plain_text" | \
+      target/protoc/bin/protoc --encode=com.vasquez.beer.SomeCustomEnvelope src/protos/beer.proto)
+
+    # show_bytes_as_chars_and_decimal "$message_envelope_proto"
+
+    binFilename="$tempFolder/$(basename "$filename" .txt).bin"
+    printf "%s" "$message_envelope_proto" > "$binFilename"
+
   done
 
   echo "proto messages encoded [$tempFolder]"
+}
+
+function show_bytes_as_octal() {
+  echo "octal bytes"
+  echo "$1" | od -v -An -to1
+}
+
+function show_bytes_as_chars_and_decimal {
+  echo "chars/decimal bytes"
+  printf "%s" "$1" | od -v -An -tcd1
+}
+
+function convert_octal_bytes_to_escaped_string_sequence() {
+
+    response_proto_octal=$(printf "%s" "$1" | \
+
+      # get octal bytes
+      od -v -An -to1 | \
+
+      # squeeze spaces to single spaces
+      tr -s ' ' | \
+
+      # remove new lines
+      tr -d '\n' | \
+
+      # replace leading spaces to \ so " 001" becomes "\001"
+      tr ' ' '\' | \
+
+      # remove trailing \
+      sed 's/.$//'
+    )
+
+    printf "%s" "$response_proto_octal"
 }
 
 function main() {

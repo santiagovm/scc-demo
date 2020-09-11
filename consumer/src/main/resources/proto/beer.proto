@@ -1,8 +1,10 @@
 syntax = "proto3";
 
 package com.vasquez.beer;
+
 option java_package = "com.vasquez";
-option java_outer_classname = "Beer";
+option java_outer_classname = "BeerProtos";
+option java_multiple_files = true;
 
 message Response {
     enum BeerCheckStatus {
@@ -16,4 +18,9 @@ message Response {
 
     string city = 16;
     int64 dob =17;
+}
+
+message SomeCustomEnvelope {
+    string message_type = 1;
+    bytes event_data = 2;
 }
